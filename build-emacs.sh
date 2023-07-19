@@ -14,8 +14,8 @@
 
 START_DATE=$(date +"%s")
 ROOT_DIR="$(pwd)"
-BUILD_DIR="${HOME}/tmp/emacs-build"
-SRC_DIR="${HOME}/src/emacs"
+BUILD_DIR="${HOME}/temp/emacs-build"
+SRC_DIR="${HOME}/temp/emacs"
 GIT_VERSION="emacs-git-version.el"
 
 
@@ -50,7 +50,7 @@ done
 echo "native-comp: ${NATIVE_COMP}"
 
 # Enable proxy
-export https_proxy="http://127.0.0.1:8889" && echo "HTTPS proxy enabled."
+export https_proxy="http://127.0.0.1:7890" && echo "HTTPS proxy enabled."
 
 
 echo "
@@ -196,10 +196,8 @@ echo "
 # Note that this renames ctags in emacs so that it doesn't conflict with other
 # installed ctags; see and don't compress info files, etc
 # https://www.topbug.net/blog/2016/11/10/installing-emacs-from-source-avoid-the-conflict-of-ctags/
-if [[ "$OSTYPE" =~ ^msys ]] && [[ ${NATIVE_COMP} =~ ^--with-native-compilation ]]; then
-    echo "Warning: CFLAGS='-O2 -fno-optimize-sibling-calls'; see details: https://git.savannah.gnu.org/cgit/emacs.git/commit/?h=emacs-29&id=679e9d7c56e2296e3a218290d941e28002bf7722
-"
-    CFLAGS='-O2 -fno-optimize-sibling-calls' ./configure ${NATIVE_COMP} --without-dbus
+if [[ "$OSTYPE" =~ ^msys ]]; then
+    CFLAGS='-march=native -Ofast -fno-finite-math-only' ./configure ${NATIVE_COMP} --without-dbus
 else
     ./configure ${NATIVE_COMP} --without-dbus
 fi
